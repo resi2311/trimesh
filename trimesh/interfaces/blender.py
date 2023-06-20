@@ -35,12 +35,17 @@ _blender_executable = util.which('blender', path=_search_path)
 exists = _blender_executable is not None
 
 
-def boolean(meshes, operation='difference', debug=False):
+def boolean(meshes, 
+            operation='difference', 
+            debug=False,
+            blnd_path=None):
     """
     Run a boolean operation with multiple meshes using Blender.
     """
-    if not exists:
-        raise ValueError('No blender available!')
+    # if not exists:
+    #     raise ValueError('No blender available!')
+    if not blnd_path:
+        blnd_path = _blender_executable
     operation = str.upper(operation)
     if operation == 'INTERSECTION':
         operation = 'INTERSECT'
@@ -52,7 +57,7 @@ def boolean(meshes, operation='difference', debug=False):
     with MeshScript(meshes=meshes,
                     script=script,
                     debug=debug) as blend:
-        result = blend.run(_blender_executable +
+        result = blend.run(blnd_path +
                            ' --background --python $SCRIPT')
 
     for m in util.make_sequence(result):
